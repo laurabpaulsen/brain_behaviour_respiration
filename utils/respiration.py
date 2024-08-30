@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import interpolate, signal
 
 
-def extract_phase_angle(resp_timeseries:np.arrray, figpath = None):
+def extract_phase_angle(resp_timeseries:np.array, widths = 4, figpath = None):
     """ 
     Extracts continuous phase angle for respiration data by running an adapted peak detection algorithm
 
@@ -18,6 +18,7 @@ def extract_phase_angle(resp_timeseries:np.arrray, figpath = None):
         If provided, a plot useful for sanity check of extraction of phase angle is generated and saved to destination
 
     returns 
+        normalised_ts, peaks, troughs, phase_angle
     """
     r = resp_timeseries.copy()
 
@@ -37,7 +38,9 @@ def extract_phase_angle(resp_timeseries:np.arrray, figpath = None):
     normalised_ts = (r - np.nanmean(r)) / np.nanstd(r)
 
     # finding peaks and troughs
-    peaks = signal.find_peaks(normalised_ts)[0]
+    peaks = signal.find_peaks_cwt(normalised_ts, widths = widths)
+
+    # old = peaks = signal.find_peaks(normalised_ts)[0] figure out what works best on data!!
     troughs = np.array([], dtype = int)
 
     for peak1, peak2 in zip(peaks, peaks[1:]):                  # finding the troughs -> the minimum between the peaks
@@ -66,14 +69,21 @@ def extract_phase_angle(resp_timeseries:np.arrray, figpath = None):
 
 
 
-def sanity_check_phase_angle(resp_timeseries, normalised_ts, peaks, troughs, phase_angle, savepath):
+def sanity_check_phase_angle(resp_timeseries = None, normalised_ts = None, peaks = None, troughs = None, phase_angle = None, savepath = None):
     fig, ax = plt.subplots(1, 1, figsize = (12, 6), dpi = 300)
-    ax.plot(resp_timeseries, label = "original timeseries")
-    ax.plot(normalised_ts, label = "normalised interpolated timeseries")
-    ax.plot(phase_angle, label = "phase_angle", color = "green")
-    ax.scatter(peaks, np.zeros(len(peaks)), s = 4, label = "peaks")
-    ax.scatter(troughs, np.zeros(len(troughs)), s = 4, label = "troughs")
+
+    for var, label in zip([resp_timeseries, normalised_ts, phase_angle], ["original timeseries", "normalised interpolated timeseries", "phase angle"]):
+        if var != None:
+            ax.plot(var, label = label)
+    
+    for var, label in zip([peaks, troughs, phase_angle], ["peaks", "troughs"]):
+        if var != None:
+            ax.scatter(var, label = label)
 
     ax.legend()
 
-    plt.savefig(savepath)
+    if savepath:
+        plt.savefig(savepath)
+
+    else:
+        return fig, ax
