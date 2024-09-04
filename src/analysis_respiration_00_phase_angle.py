@@ -39,8 +39,8 @@ def extract_phase_angle(resp_timeseries:np.array, widths = 4, figpath = None):
 
     # finding peaks and troughs
     peaks = signal.find_peaks_cwt(normalised_ts, widths = widths)
-
-    # old = peaks = signal.find_peaks(normalised_ts)[0] figure out what works best on data!!
+    # old way of doing it -> peaks = signal.find_peaks(normalised_ts)[0] figure out what works best on data!!
+    
     troughs = np.array([], dtype = int)
 
     for peak1, peak2 in zip(peaks, peaks[1:]):                  # finding the troughs -> the minimum between the peaks

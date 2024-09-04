@@ -1,5 +1,5 @@
 import numpy as np
-from utils import respiration as resp
+from utils import analysis_respiration_phase_angle as resp
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -26,10 +26,9 @@ def respiration_to_phase_angle(figpath):
 
     # Plot normalized respiratory timecourse on the primary y-axis
     ax1.plot(normalised_ts, lw=2, color="grey", alpha=0.5)
-    ax1.axhline(0, color="grey", ls="--", lw=2)
     ax1.set_xlim(0, 430)
     ax1.set_ylim(-2, 2)
-    ax1.set_ylabel("Respiration (Z-score)", color="grey")
+    ax1.set_ylabel("Respiration (Z-score)", color="grey", zorder=-2)
     ax1.tick_params(axis='y', labelcolor="grey")
     
     # Hide the x-axis labels and ticks
@@ -38,7 +37,7 @@ def respiration_to_phase_angle(figpath):
     # Create a secondary y-axis to plot the phase angle
     ax2 = ax1.twinx()
     ax2.plot(phase_angle, lw=2, color="darkgreen", alpha=0.4)
-    ax2.axhline(0, color="grey", ls="--", lw=1)
+    ax2.axhline(0, color="grey", ls="--", lw=1, zorder=-1)
     ax2.set_ylabel("Phase angle", color="darkgreen")
     ax2.set_ylim(-3.3, 3.3)
     ax2.tick_params(axis='y', labelcolor="darkgreen")
@@ -47,11 +46,9 @@ def respiration_to_phase_angle(figpath):
     events = [0, 1, 1]
     samples = [50, 258, 420]
 
-    for trigger, label in zip([0, 1], ["omission", "weak"]):
-        idx = [i for i in range(len(events)) if events[i] == trigger]
-        tmp_samples = [samples[i] for i in idx]
-        tmp_phase_angle = [phase_angle[samples[i]] for i in idx]
-        ax2.scatter(tmp_samples, tmp_phase_angle, label=label)
+    tmp_phase_angle = [phase_angle[i] for i in samples]
+    ax2.scatter(samples, tmp_phase_angle, c = events, zorder=1, alpha = 1)
+
 
     # Add legend to the phase angle plot
     ax2.legend(loc="upper right")
