@@ -1,7 +1,7 @@
 import mne
 from pathlib import Path
 import respiration as resp
-from master import recordings
+from config import recordings
 import numpy as np
 
 class MEG_participant:
