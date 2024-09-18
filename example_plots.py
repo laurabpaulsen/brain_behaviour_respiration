@@ -1,5 +1,7 @@
 import numpy as np
-from utils import analysis_respiration_phase_angle as resp
+import sys
+sys.path.append("src")
+import respiration as resp
 import matplotlib.pyplot as plt
 from pathlib import Path
 
