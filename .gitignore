@@ -163,3 +163,8 @@ cython_debug/
 
 
 sandbox/*
+
+src/laus_scripts/*
+.DS_Store
+fig/00*/
+check_respiration.py
