@@ -65,7 +65,6 @@ def extract_phase_angle(resp_timeseries:np.array, widths = 500, min_sample = 100
             trough_ind = int(trough_ind_tmp[0] + peak1)                # get the index relative to the entire time series
         except TypeError:
             trough_ind = int(np.mean(trough_ind_tmp[0]) + peak1) 
-            print(trough_ind_tmp[0])
 
 
         troughs = np.append(troughs, trough_ind) 
@@ -159,7 +158,7 @@ def phase_angle_events(phase_angles:np.array, events:np.array): # come up with a
             new_data = pd.DataFrame.from_dict({
                 "phase_angle": [phase_angles[sample]],
                 "trigger": [trigger],
-                "sample": [sample]
+                "sample_100hz": [sample]
             })
 
             df = pd.concat([df, new_data])
